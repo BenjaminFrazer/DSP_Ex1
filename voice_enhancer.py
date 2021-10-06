@@ -32,17 +32,15 @@ def get_amplification(array, amp_factor):
 
 """Import an audio file in .wav format at 48KHz"""
 path = os.getcwd()
-fileNameRelPath = 'FFT Test.wav'
+file_name = 'FFT Test.wav'
 # file_name = 'FFT_2.wav'
 # file_name = 'New FFT.wav'
 
-location = os.path.join(path, fileNameRelPath)
+location = os.path.join(path, file_name)
 samplerate, data = wavfile.read(location)
-timeStep = 1/samplerate  # BF added this var for deriving the freq array
 
 """Create the FFT of the data(np array of numbers) obtained from the audio file"""
 data_fft = np.fft.fft(data)
-freqs_fft = np.fft.fftfreq(data.size, samplerate)  # this is an array of frequencies indexed
 
 """Create an array of half range of values from the fourier transform so we can plot up to the nyquist frequency"""
 half_rangeValues = data_fft[0:int(len(data_fft) / 2 - 1)]
@@ -74,8 +72,6 @@ plt.ylabel('Amplitude(dB)')
 
 # Amplification and noise reduction
 
-# peters original code
-
 """Values for lower frequency noise at 0 - 100Hz """
 noise_1 = get_arrayIndex(data_fft, samplerate, 0)  # array location at 0Hz
 noise_2 = get_arrayIndex(data_fft, samplerate, 99)  # array location at 99Hz
@@ -97,7 +93,7 @@ k8 = get_arrayIndex(data_fft, samplerate, 10000)  # array location at 10000Hz
 noise_3 = get_arrayIndex(data_fft, samplerate, 10001)  # array location at 10001Hz
 noise_4 = get_arrayIndex(data_fft, samplerate, 24000)  # array location at 24000Hz
 
-"""Perform noise reduction by a factor so the resulting DB is almost negated. Call the get_noiseReduction function on
+"""Perform noise reduction by a factor so the resulting DB is almost negated. Call the get_noiseReduction function on 
 both the area before N/2 and after to obtain a mirroring effect"""
 data_fft[noise_1:noise_2] = get_noiseReduction(data_fft[noise_1:noise_2], ns_1)  # Lower frequency noise reduction
 data_fft[int(len(data_fft) - noise_2):int(len(data_fft) - noise_1)] = \
@@ -107,7 +103,7 @@ data_fft[noise_3:noise_4] = get_noiseReduction(data_fft[noise_3:noise_4], ns_2) 
 data_fft[int(len(data_fft) - noise_4):int(len(data_fft) - noise_3)] = \
     get_noiseReduction(data_fft[int(len(data_fft) - noise_4):int(len(data_fft) - noise_3)], ns_2)  # Mirroring
 
-"""Perform amplification by a chosen factor so the resulting audio file is clearer than the original.
+"""Perform amplification by a chosen factor so the resulting audio file is clearer than the original. 
 Call the get_amplification function on both the area before N/2 and after to obtain a mirroring effect"""
 data_fft[k1:k2] = get_amplification(data_fft[k1:k2], amp_1)  # Harmonics amplification
 data_fft[int(len(data_fft) - k2):int(len(data_fft) - k1)] = \
@@ -147,7 +143,7 @@ plt.ylabel('Amplitude')
 
 
 """Create a new audio file that stores the improved version of the initial audio file"""
-name = str('Improved ' + fileNameRelPath)
+name = str('Improved ' + file_name)
 wavfile.write(name, samplerate, wav_file)
 
 # Subplot adjustments
