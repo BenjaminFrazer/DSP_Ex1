@@ -105,6 +105,7 @@ data_fft[k7:k8] = data_fft[k7:k8] * amp_4  # Harmonics amplification
 data_fft[int(len(data_fft) - k7):int(len(data_fft) - k8)] = \
     data_fft[int(len(data_fft) - k7):int(len(data_fft) - k8)] * amp_4  # Mirroring
 
+
 """Plot the improved fft"""
 new_halfRange = data_fft[0:int(len(data_fft) / 2 - 1)]
 new_dB = 20 * np.log10(new_halfRange / max(half_rangeValues))
