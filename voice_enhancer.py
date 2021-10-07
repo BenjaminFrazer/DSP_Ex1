@@ -32,9 +32,10 @@ def get_amplification(array, amp_factor):
 
 """Import an audio file in .wav format at 48KHz"""
 path = os.getcwd()
-file_name = 'FFT Test.wav'
+# file_name = 'FFT Test.wav'
 # file_name = 'FFT_2.wav'
 # file_name = 'New FFT.wav'
+file_name = 'Test_recording.wav'
 
 location = os.path.join(path, file_name)
 samplerate, data = wavfile.read(location)
