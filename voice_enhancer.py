@@ -13,6 +13,11 @@ amp_3 = 20
 amp_4 = 8
 max_values = 2 ** 16
 
+# Functions:
+def mirrorAmplify(arr, start, stop, amp):
+    N = len(arr)
+    arr[start:stop] *= amp
+    arr[(N-stop):(N-start)] *= amp
 
 # Question 1
 
@@ -79,31 +84,15 @@ noise_4 = int(len(data_fft) / samplerate * 24000)  # array location at 24000Hz
 
 """Perform noise reduction by a factor so the resulting DB is almost negated. Call the get_noiseReduction function on 
 both the area before N/2 and after to obtain a mirroring effect"""
-data_fft[noise_1:noise_2] = data_fft[noise_1:noise_2] / ns_1  # Lower frequency noise reduction
-data_fft[int(len(data_fft) - noise_2):int(len(data_fft) - noise_1)] = \
-    data_fft[int(len(data_fft) - noise_2):int(len(data_fft) - noise_1)] / ns_1  # Mirroring
-
-data_fft[noise_3:noise_4] = data_fft[noise_3:noise_4] / ns_2  # Higher frequency noise reduction
-data_fft[int(len(data_fft) - noise_4):int(len(data_fft) - noise_3)] = \
-    data_fft[int(len(data_fft) - noise_4):int(len(data_fft) - noise_3)] / ns_2  # Mirroring
+mirrorAmplify(data_fft, noise_1, noise_2, 1 / ns_1) # Lower frequency noise reduction
+mirrorAmplify(data_fft, noise_3, noise_4, 1 / ns_2) # Higher frequency noise reduction
 
 """Perform amplification by a chosen factor so the resulting audio file is clearer than the original. 
 Call the get_amplification function on both the area before N/2 and after to obtain a mirroring effect"""
-data_fft[k1:k2] = data_fft[k1:k2] * amp_1  # Harmonics amplification
-data_fft[int(len(data_fft) - k2):int(len(data_fft) - k1)] = \
-    data_fft[int(len(data_fft) - k2):int(len(data_fft) - k1)] * amp_1  # Mirroring
-
-data_fft[k3:k4] = data_fft[k3:k4] * amp_2  # Harmonics amplification
-data_fft[int(len(data_fft) - k4):int(len(data_fft) - k3)] = \
-    data_fft[int(len(data_fft) - k4):int(len(data_fft) - k3)] * amp_2  # Mirroring
-
-data_fft[k5:k6] = data_fft[k5:k6] * amp_3  # Harmonics amplification
-data_fft[int(len(data_fft) - k6):int(len(data_fft) - k5)] = \
-    data_fft[int(len(data_fft) - k6):int(len(data_fft) - k5)] * amp_3  # Mirroring
-
-data_fft[k7:k8] = data_fft[k7:k8] * amp_4  # Harmonics amplification
-data_fft[int(len(data_fft) - k7):int(len(data_fft) - k8)] = \
-    data_fft[int(len(data_fft) - k7):int(len(data_fft) - k8)] * amp_4  # Mirroring
+mirrorAmplify(data_fft, k1, k2, amp_1) # Harmonics amplification
+mirrorAmplify(data_fft, k3, k4, amp_2) # Harmonics amplification
+mirrorAmplify(data_fft, k5, k6, amp_3) # Harmonics amplification
+mirrorAmplify(data_fft, k7, k8, amp_4) # Harmonics amplification
 
 """Plot the improved fft"""
 new_halfRange = data_fft[0:int(len(data_fft) / 2 - 1)]
