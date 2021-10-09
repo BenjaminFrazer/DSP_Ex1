@@ -2,7 +2,6 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
-from scipy.signal import find_peaks
 
 
 def identifier(list, vowel, dB):
@@ -14,7 +13,8 @@ def identifier(list, vowel, dB):
         j += 1
 
     for k in indexList:
-        if dB[k] > dB[k-1] and dB[k] > dB[k+1]:
+        if dB[k] > dB[k-1] and dB[k] > dB[k+1] and dB[k] > dB[k-2] and dB[k] > dB[k+2] and dB[k] > dB[k-3] \
+                and dB[k] > dB[k+3] and dB[k] > dB[k-4] and dB[k] > dB[k+4]:
             return 1
 
 
@@ -69,7 +69,7 @@ def voweldetector(name):
 
     while v <= len(vowels)-1:
         p = (identifier(frequencyList, vowels[v], dB))
-        if p is 1:
+        if p == 1:
             foundVowels.append(vowels_name[v])
         v += 1
 
