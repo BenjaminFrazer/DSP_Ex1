@@ -82,8 +82,8 @@ for i in range(0,_ntraces):
 
 
 plt.legend(legendList)
-plt.xlabel("time (s)")
-plt.subplot(2, 1, 1)
 plt.xlabel("freq (Hz)")
+plt.subplot(2, 1, 1)
+plt.xlabel("time (s)")
 plt.legend(legendList)
 plt.show()
