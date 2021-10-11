@@ -7,10 +7,10 @@ import os
 
 ns_1 = 10**8
 ns_2 = 50**8
-amp_1 = 5
-amp_2 = 10
-amp_3 = 20
-amp_4 = 8
+amp_1 = 35
+amp_2 = 25
+amp_3 = 35
+amp_4 = 30
 max_values = 2 ** 16
 
 
@@ -18,10 +18,7 @@ max_values = 2 ** 16
 
 """Import an audio file in .wav format at 48KHz"""
 path = os.getcwd()
-# file_name = 'FFT Test.wav'
-# file_name = 'FFT_2.wav'
-file_name = 'Test_recording.wav'
-
+file_name = 'Fox.wav'
 
 location = os.path.join(path, file_name)
 samplerate, data = wavfile.read(location)
@@ -60,7 +57,7 @@ plt.ylabel('Amplitude(dB)')
 noise_1 = int(len(data_fft) / samplerate * 0)  # array location at 0Hz
 noise_2 = int(len(data_fft) / samplerate * 99)  # array location at 99Hz
 
-"""Values for the harmonic frequency at 1KHz to 10Khz"""
+"""Values for the harmonic frequency at 1KHz to 8Khz"""
 k1 = int(len(data_fft) / samplerate * 1000)  # array location at 1000Hz
 k2 = int(len(data_fft) / samplerate * 2500)  # array location at 2500Hz
 
@@ -71,10 +68,10 @@ k5 = int(len(data_fft) / samplerate * 5001)  # array location at 5001Hz
 k6 = int(len(data_fft) / samplerate * 7500)  # array location at 7500Hz
 
 k7 = int(len(data_fft) / samplerate * 7501)  # array location at 7501Hz
-k8 = int(len(data_fft) / samplerate * 10000)  # array location at 10000Hz
+k8 = int(len(data_fft) / samplerate * 8000)  # array location at 8000Hz
 
-"""Values for the higher frequency noise at 10KHz - 24KHz"""
-noise_3 = int(len(data_fft) / samplerate * 10001)  # array location at 10001Hz
+"""Values for the higher frequency noise at 8KHz - 24KHz"""
+noise_3 = int(len(data_fft) / samplerate * 8001)  # array location at 8001Hz
 noise_4 = int(len(data_fft) / samplerate * 24000)  # array location at 24000Hz
 
 """Perform noise reduction by a factor so the resulting DB is almost negated. Call the get_noiseReduction function on 
