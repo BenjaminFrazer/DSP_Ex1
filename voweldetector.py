@@ -1,82 +1,129 @@
-import numpy as np
+#!/usr/bin/env ipython
 import os
-import matplotlib.pyplot as plt
+import numpy as np
 from scipy.io import wavfile
 
 
-def identifier(list, vowel, data):
-    j = 0
-    indexList = []
-    while j <= len(list)-1:
-        if list[j] in vowel:
-            indexList.append(j)
-        j += 1
+def voweldetector(targetwavefile):
+    '''prints the detected vowel (a, o, e)'''
 
-    for k in indexList:
-        if data[k] > data[k-1] and data[k] > data[k+1] and data[k] > data[k-2] and data[k] > data[k+2] \
-                and data[k] > data[k-3] and data[k] > data[k+3] and data[k] > data[k-4] and data[k] > data[k+4]:
-            return 1
-        else:
-            return 0
+    doPrintDebug = False  # print debug messages
+    # define some constants
+
+    vowelMaxF = 2000  # Hz maximum expected vowel freq
+
+    # the range of frequencies where 'o' is dominant
+    doorFbounds = [
+        [176, 203],
+        [267, 325],
+        [355, 465],
+        [1085, 1140],
+        [1212, 1244],
+        [1281, 1340],
+        [1380, 1430],
+    ]
+
+    # the score achieved by the test data for this range
+    doorMaxScore = 0.4789494436157115
+
+    # the range of freqs where 'e' is dominant
+    sheepFbounds = [
+        [108, 125],
+        [210, 245],
+    ]
+
+    # the score achieved by the test data for this range
+    sheepMaxScore = 0.771509570998525
+
+    # the range of freqs where 'a' is dominant
+    farFbounds = [
+        [500, 1011],
+        ]
+
+    # the score achieved by the test data for this range
+    farMaxScore = 0.7346054181089477
+
+    # stick all of the above into list that we can loop through
+    vowels2Check = ['e',  # sheep
+                    'o',  # door
+                    'a']  # far
+
+    bounds = [sheepFbounds,
+              doorFbounds,
+              farFbounds]
+
+    maxScores = [sheepMaxScore,
+                 doorMaxScore,
+                 farMaxScore]
+
+    # main section
+    baseFileName = os.path.basename(targetwavefile)
+    if doPrintDebug:
+        print("Reading: ", baseFileName, "from:\n", targetwavefile, "\n")
+
+    # read in data
+    fs, data = wavfile.read(targetwavefile)
+    if len(data.shape) > 1:  # make sure we only have one ch
+        data = data[:, 1]
+
+    data = np.int64(data)  # recast this incase we run out of bits
+    # tSignalPower = np.sum(abs(data) ** 2)
+
+    # define some constants
+    N = len(data)  # Number of samples
+    df = fs/N  # frequency resolution
+    # ts = 1/fs  # sample period
+    # fn = fs/2  # nyquist frequency
+
+    # define frequency/time vectors
+    freqs = np.arange(0, N) * df
+    idxVowels = freqs < vowelMaxF
+    # t = np.arange(0, N) * ts
+
+    # take fft
+    dataFft = np.fft.fft(data)
+    # fSignalPower = 1/N * np.sum(abs(dataFft) ** 2)
+
+    # here we look at the sig Pow in only the vowel range 0->2000Hz
+    vowelSignalPower = 2 * 1/N * np.sum(abs(dataFft[idxVowels]) ** 2)
+    score = np.array([0, 0, 0], float)
+
+    # loop through all of different vowels we are testing for
+    for i in range(3):
+        thisVowelFreqBounds = bounds[i]
+        thisVowelIdStr = vowels2Check[i]
+
+        # here we create a logical array which represents the idxs we have selected
+        idxFreqsOfInterest = np.full(N, False, bool)  # create a blank logical arr 2 pop
+        for ii in range(len(thisVowelFreqBounds)):
+            theseBounds = thisVowelFreqBounds[ii]
+            lowBound = min(theseBounds)
+            uppBound = max(theseBounds)
+            theseIdxs = (freqs > lowBound) & (freqs < uppBound)
+            idxFreqsOfInterest = idxFreqsOfInterest | theseIdxs
+
+        # calculate the signal power in the region we are interested
+        maskedSignalPower = 2 * 1/N * np.sum(abs(dataFft[idxFreqsOfInterest]) ** 2)
+        pRatio = (maskedSignalPower/vowelSignalPower)  # the ifraction of sig P in the freq range
+        score[i] = pRatio / maxScores[i]  # the ratio of pRatio to a perfect score in %
+        # this will be 100% for training data
+
+        # print out the scores for each of the tree vowels
+        if doPrintDebug:
+            print(round(score[i] * 100, 1), '%', thisVowelIdStr, "in ",
+                  baseFileName, " ... ", " maskedPow/vowPow -> ",
+                  round(pRatio, 3))
+
+    # now we decide which vowel it was based on the score
+    idxMax = score.argmax()
+    print(vowels2Check[idxMax])
 
 
-def voweldetector(name):
+currentFilePath = os.getcwd()
+dir_1 = 'Recordings/WordsWithSinglePhonetic/DSP_BF_door.wav'
+dir_2 = 'Recordings/WordsWithSinglePhonetic/DSP_BF_far.wav'
+path_1 = os.path.join(currentFilePath, dir_1)
+path_2 = os.path.join(currentFilePath, dir_2)
 
-    v = 0
-    foundVowels = []
-
-    sheep = 280.0, 2620.0, 3380.0
-    ship = 360.0, 2220.0, 2960.0
-    bed = 600.0, 2060.0, 2840.0
-    cat = 800.0, 1760.0, 2500.0
-    up = 760.0, 1320.0, 2500.0
-    far = 740.0, 1180.0, 2640.0
-    on = 560.0, 920.0, 2560.0
-    door = 480.0, 760.0, 2620.0
-    good = 380.0, 940.0, 2300.0
-    shoot = 320.0, 920.0, 2200.0
-    bird = 0, 0, 0
-    teacher = 0, 0, 0
-
-    vowels = [sheep,ship,bed,cat,up,far,on,door,good,shoot,bird,teacher]
-    vowels_name = ['sheep','ship','bed','cat','up','far','on','door','good','shoot','bird','teacher']
-
-    """Import an audio file in .wav format at 48KHz"""
-    path = os.getcwd()
-    file_name = name
-
-    location = os.path.join(path, file_name)
-    samplerate, data = wavfile.read(location)
-
-    """Create the FFT of the data(np array of numbers) obtained from the audio file"""
-    data_fft = np.fft.fft(data)
-
-    """Define the frequency and time domains"""
-    f = np.linspace(0, samplerate/2, len(data_fft))
-
-    """Plot the Frequency domain spectrum"""
-    plt.plot(f, np.abs(data_fft))
-    plt.title('Frequency Domain')
-    plt.xlabel('Frequency(rad/s)')
-    plt.ylabel('Amplitude(dB)')
-
-    # plt.show()
-    frequencyList = np.round(f, 1)
-
-    while v <= len(vowels)-1:
-        p = (identifier(frequencyList, vowels[v], np.abs(data_fft)))
-        if p == 1:
-            foundVowels.append(vowels_name[v])
-        v += 1
-
-    return foundVowels
-
-
-vowel_1 = voweldetector('Test_recording.wav')
-vowel_2 = voweldetector('Fox.wav')
-
-for vowel in vowel_1:
-    print('Wave file 1: ',vowel)
-
-for vowel in vowel_2:
-    print('Wave file 2: ',vowel)
+voweldetector(path_1)
+voweldetector(path_2)
