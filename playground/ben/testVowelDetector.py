@@ -57,7 +57,7 @@ for thisTargFileRegexp in targetFiles2Plot_Regexp:
     for thisPath2Cmp in allRecsOnPath:
         thismatch = re.match(thisTargFileRegexp, thisPath2Cmp)
         if thismatch is not None:
-            print(thismatch.string, '\n')
+            # print(thismatch.string, '\n')
             targetFilesFullPath.append(thismatch.string)
 
 # call vowel detector function
