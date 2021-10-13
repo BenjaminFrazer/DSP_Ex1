@@ -7,7 +7,7 @@ from scipy.io import wavfile
 def voweldetector(targetwavefile):
     '''prints the detected vowel (a, o, e)'''
 
-    doPrintDebug = True
+    doPrintDebug = False  # print debug messages
     # define some constants
 
     vowelMaxF = 2000  # Hz maximum expected vowel freq
