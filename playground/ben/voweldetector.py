@@ -93,7 +93,11 @@ def voweldetector(targetwavefile):
         thisVowelFreqBounds = bounds[i]
         thisVowelIdStr = vowels2Check[i]
 
-        # here we create a logical array which represents the idxs we have selected
+        '''here we create a logical array which represents the idxs we want to
+        consider for this vowel, since there may be an arbitrary number of
+        different ranges for a give vowel, we need to loop through each range
+        individualy and add the selected freqs as true bools to the
+        idxFreqsOfInterest vector'''
         idxFreqsOfInterest = np.full(N, False, bool)  # create a blank logical arr 2 pop
         for ii in range(len(thisVowelFreqBounds)):
             theseBounds = thisVowelFreqBounds[ii]
