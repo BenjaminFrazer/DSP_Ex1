@@ -18,7 +18,7 @@ max_values = 2 ** 16
 
 """Import an audio file in .wav format at 48KHz"""
 path = os.getcwd()
-file_name = 'Fox.wav'
+file_name = 'original.wav'
 
 location = os.path.join(path, file_name)
 samplerate, data = wavfile.read(location)
@@ -46,7 +46,7 @@ plt.subplot(2, 2, 2)
 plt.plot(f, dB)
 plt.xscale('log')
 plt.title('Frequency Domain')
-plt.xlabel('Frequency(rad/s)')
+plt.xlabel('Frequency(Hz)')
 plt.ylabel('Amplitude(dB)')
 
 # Question 3
@@ -58,15 +58,20 @@ noise_1 = int(len(data_fft) / samplerate * 0)  # array location at 0Hz
 noise_2 = int(len(data_fft) / samplerate * 99)  # array location at 99Hz
 
 """Values for the harmonic frequency at 1KHz to 8Khz"""
+
+"""k1 and k2 capture the vowels"""
 k1 = int(len(data_fft) / samplerate * 1000)  # array location at 1000Hz
 k2 = int(len(data_fft) / samplerate * 2500)  # array location at 2500Hz
 
+"""k3 and k4 capture the consonants"""
 k3 = int(len(data_fft) / samplerate * 2501)  # array location at 2501Hz
 k4 = int(len(data_fft) / samplerate * 5000)  # array location at 5000Hz
 
+"""k5 and k6 capture the unvoiced consonants"""
 k5 = int(len(data_fft) / samplerate * 5001)  # array location at 5001Hz
 k6 = int(len(data_fft) / samplerate * 7500)  # array location at 7500Hz
 
+"""k7 and k8 capture the remaining unvoiced consonants"""
 k7 = int(len(data_fft) / samplerate * 7501)  # array location at 7501Hz
 k8 = int(len(data_fft) / samplerate * 8000)  # array location at 8000Hz
 
@@ -109,7 +114,7 @@ plt.subplot(2, 2, 4)
 plt.plot(f, new_dB)
 plt.xscale('log')
 plt.title('Improved Frequency Domain')
-plt.xlabel('Frequency(rad/s)')
+plt.xlabel('Frequency(Hz)')
 plt.ylabel('Amplitude(dB)')
 
 """Plot the improved sound wave by performing inverse fourier transform"""
