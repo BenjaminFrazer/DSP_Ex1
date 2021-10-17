@@ -19,7 +19,7 @@ max_values = 2 ** 16
 def mirrorAmplify(arr, start, stop, amp):
     N = len(arr)
     arr[start:stop+1] *= amp
-    arr[(N-stop):(N-start)] *= amp
+    arr[(N-stop):(N-start)+1] *= amp
 
 # Question 1
 
