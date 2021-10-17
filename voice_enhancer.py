@@ -14,9 +14,11 @@ amp_4 = 30
 max_values = 2 ** 16
 
 # Functions:
+
+
 def mirrorAmplify(arr, start, stop, amp):
     N = len(arr)
-    arr[start:stop] *= amp
+    arr[start:stop+1] *= amp
     arr[(N-stop):(N-start)] *= amp
 
 # Question 1
