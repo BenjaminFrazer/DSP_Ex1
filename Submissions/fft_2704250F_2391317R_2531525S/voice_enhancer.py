@@ -53,7 +53,7 @@ plt.subplot(2, 2, 2)
 plt.plot(f, dB)
 plt.xscale('log')
 plt.title('Frequency Domain')
-plt.xlabel('Frequency(Hz)')
+plt.xlabel('Frequency(rad/sec)')
 plt.ylabel('Amplitude(dB)')
 
 # Question 3
@@ -105,7 +105,7 @@ plt.subplot(2, 2, 4)
 plt.plot(f, new_dB)
 plt.xscale('log')
 plt.title('Improved Frequency Domain')
-plt.xlabel('Frequency(Hz)')
+plt.xlabel('Frequency(rad/sec)')
 plt.ylabel('Amplitude(dB)')
 
 """Plot the improved sound wave by performing inverse fourier transform"""
